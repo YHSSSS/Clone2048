@@ -187,7 +187,7 @@ public class BlocksMovement : MonoBehaviour
         manager.SetBlocksObject(blocks);
 
         //update score
-        currentScore += 5 * addedCount;
+        currentScore += addedCount;
         manager.SetScore((int)currentScore);
         Debug.Log("current score: " + currentScore);
 

@@ -109,14 +109,19 @@ public class GameManager : MonoBehaviour
     {
         if (array[index] == 0)
             return true;
+        //check if the left block of current block is addable
         if (index % blockNumEachR > 0 && array[index - 1] == array[index] )
             return true;
+        //check if the right block of current block is addable
         if (index % blockNumEachR < blockNumEachR -1 && array[index + 1] == array[index])
             return true;
+        //check if the up block of current block is addable
         if (index >= blockNumEachR && array[index - blockNumEachR] == array[index])
             return true;
+        //check if the down block of current block is addable
         if (index < GRID_SIZE - blockNumEachR && array[index + blockNumEachR] == array[index])
             return true;
+
         return false;
     }
 
@@ -137,4 +142,5 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("you won the game!");
     }
+
 }

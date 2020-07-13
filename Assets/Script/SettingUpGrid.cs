@@ -5,8 +5,6 @@ public class SettingUpGrid : MonoBehaviour
 {
     [SerializeField]
     private int number = 5;
-    [SerializeField]
-    private GameObject singleBlock;
 
     [HideInInspector]
     private GameManager manager;
@@ -159,7 +157,14 @@ public class SettingUpGrid : MonoBehaviour
         if (transform.Find("Block" + i)) return null;
 
         //create a game object 
-        GameObject block = Instantiate(singleBlock, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        //load the block prefab object from resource
+        GameObject blockPrefab = Resources.Load(ConstString.RESOURCES_BLOCK_PATH) as GameObject;
+
+        //check if loading the object is failed
+        if (!blockPrefab) Debug.LogError("Fail to load block prefab");
+
+        //instantiate a new block object
+        GameObject block = Instantiate(blockPrefab) as GameObject;
         
         //create a rectangle transform 
         RectTransform rt = block.GetComponent<RectTransform>();

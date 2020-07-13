@@ -7,13 +7,11 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Animator))]
 public class MenuManagement : MonoBehaviour
 {
-    [SerializeField]
-    private InputField playerNameInput;
-
     [HideInInspector]
     private string playerName;
 
-    private TouchScreenKeyboard keyboard;
+    [HideInInspector]
+    private InputField playerNameInput;
 
     //components
     //[HideInInspector]
@@ -25,24 +23,52 @@ public class MenuManagement : MonoBehaviour
     {
         //xml = GetComponent<XmlMethods>();
         ani = GetComponent<Animator>();
+
+        playerNameInput = GameObject.Find("PlayerName").GetComponent<InputField>();
     }
 
     public void ShowNewGameTitle()
     {
+        //set the animator bool variable to show a button
         ani.SetBool("ShowTitleButtonIsPressed", true);
     }
 
     public void StartNewGame()
     {
-        if (playerNameInput.text != null || playerNameInput.text == "")
+        if (playerNameInput.text != null && playerNameInput.text != "" && playerNameInput.text.Length > 0)
         {
+            //set animator bool variable
             ani.SetBool("StartNewGameIsPressed", true);
+
+            //set the string to player prefabs which will be sent to next scene
             PlayerPrefs.SetString("playerName", playerName);
+
             //xml.CreateXML(playerName);
+
             StartCoroutine(GetLoadingScene());
+
+            //load to next scene
             SceneManager.LoadScene(1);
         }
-        else Debug.Log("Please enter player name!");
+        else
+        {
+            //load dialog prefab from resource
+            GameObject dialogPrefab = Resources.Load(ConstString.RESOURCES_ALERT_DIALOG_PATH) as GameObject;
+
+            //check if loading the prefab is failed
+            if (dialogPrefab == null) Debug.LogError("Fail to load dialog prefab");
+
+            //instantiate the dialog prefab 
+            GameObject dialog = Instantiate(dialogPrefab) as GameObject;
+
+            //set the parent of the object 
+            dialog.transform.SetParent(transform);
+
+            dialog.transform.name = "AlertDialog";
+
+            //change the dialog text 
+            dialog.transform.Find("DialogText").GetComponent<Text>().text = "Please Enter Your Name";
+        }
     }
 
     private IEnumerator GetLoadingScene()
@@ -52,12 +78,15 @@ public class MenuManagement : MonoBehaviour
 
     public void SetPlayerName()
     {
+        //get the player name string from input field
         playerName = playerNameInput.text;
     }
 
+    //open the website of the developer
     public void OpenWebsite()
     {
         string tempUrl = "https://github.com/YHSSSS";
         Application.OpenURL(tempUrl);
     }
+
 }

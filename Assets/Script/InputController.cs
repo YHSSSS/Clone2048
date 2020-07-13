@@ -2,6 +2,9 @@
 
 public class InputController : MonoBehaviour
 {
+    [SerializeField]
+    private float minSwipeNumver = 4.0f;
+
     [HideInInspector]
     private Vector2 startPos;
     [HideInInspector]
@@ -11,13 +14,13 @@ public class InputController : MonoBehaviour
     [HideInInspector]
     private float minSwipeDistY;
 
-    [SerializeField]
-    private float minSwipeNumver = 4.0f;
-    [SerializeField]
+    [HideInInspector]
     private BlocksMovement movement;
 
     private void Start()
     {
+        movement = GameObject.Find("GridPart").GetComponent<BlocksMovement>();
+
         isSwiped = false;
 
         //check if portrait
@@ -35,7 +38,6 @@ public class InputController : MonoBehaviour
 
     void Update()
     {
-        //if UNITY_ANDROID || UNITY_IPHONE
         if (Input.touchCount > 0)
         {
             Touch touch = Input.touches[0];
