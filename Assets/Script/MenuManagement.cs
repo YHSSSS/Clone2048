@@ -25,21 +25,6 @@ public class MenuManagement : MonoBehaviour
     {
         //xml = GetComponent<XmlMethods>();
         ani = GetComponent<Animator>();
-
-        //keyboard.active(true);
-
-    }
-    public void AwakeKeyboard()
-    {
-        Debug.Log("opening keyboard");
-        keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.ASCIICapable);
-        keyboard.active = true;
-
-        Debug.Log(TouchScreenKeyboard.area);
-        if (TouchScreenKeyboard.visible) Debug.Log("showed");
-        else Debug.Log("fail to show");
-
-        if (keyboard == null) Debug.LogError("keyboard null!");
     }
 
     public void ShowNewGameTitle()
@@ -49,7 +34,7 @@ public class MenuManagement : MonoBehaviour
 
     public void StartNewGame()
     {
-        if (playerNameInput.text != null)
+        if (playerNameInput.text != null || playerNameInput.text == "")
         {
             ani.SetBool("StartNewGameIsPressed", true);
             PlayerPrefs.SetString("playerName", playerName);

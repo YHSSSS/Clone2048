@@ -38,10 +38,12 @@ public class GameManager : MonoBehaviour
     {
         blocksPosition = _blocksPosition;
     }
+
     public void SetArrayList(int[] _array)
     {
         array = _array;
     }
+
     public void SetScore(int _score)
     {
         score = _score;
@@ -56,22 +58,27 @@ public class GameManager : MonoBehaviour
     {
         return blocksPosition;
     }
+
     public int[] GetArrayList()
     {
         return array;
     }
+
     public int GetScore()
     {
         return score;
     }
+
     public int GetGridSize()
     {
         return GRID_SIZE;
     }
+
     public int GetBlockNumEachR()
     {
         return blockNumEachR;
     }
+
     public GameObject[] GetBlocksObject()
     {
         return blocksObject;
