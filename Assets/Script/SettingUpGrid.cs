@@ -33,8 +33,9 @@ public class SettingUpGrid : MonoBehaviour
         //check if the block information lists are null  
         if (manager.GetArrayList() != null) manager.SetArrayList(null);
         if (manager.GetBlockPosition() != null) manager.SetBlockPosition(null);
-        DestroyArray();
-        //if (manager.GetBlocksObject() != null) manager.SetBlocksObject(null);
+        
+        DestroyObjectInArray();
+        manager.SetBlocksObject(null);
 
         //get the basic grid size
         gridSize = manager.GetGridSize();
@@ -61,7 +62,7 @@ public class SettingUpGrid : MonoBehaviour
         InitializeArrayInObject();
     }
 
-    private void DestroyArray()
+    private void DestroyObjectInArray()
     {
         for (int i = 0; i < gridSize; i++)
         {
@@ -136,11 +137,13 @@ public class SettingUpGrid : MonoBehaviour
             num2 = Random.Range(0, gridSize);
         } while (num1 == num2);
 
+        Debug.Log("initial num 1:" + num1 + " num 2:" + num2);
+
         //get two random numbers
         int[] iniNum = new int[2];
         for (int j = 0; j < Mathf.Sqrt(blockNumEachR); j++)
         {
-            iniNum[j] = Random.Range(0, 9) <3 ? 2 : 4;
+            iniNum[j] = Random.Range(0, 9) <2 ? 2 : 4;
         }
 
         //set numbers to indexs
@@ -154,7 +157,12 @@ public class SettingUpGrid : MonoBehaviour
     public GameObject CreateBlocksObject(int i)
     {
         //check if the object of current index exist
-        if (transform.Find("Block" + i)) return null;
+        GameObject blockTemp = GameObject.Find("Block" + i);
+        if (blockTemp)
+        {
+            Destroy(blockTemp);
+            Debug.Log("Destroy exist object");
+        }  
 
         //create a game object 
         //load the block prefab object from resource
@@ -194,6 +202,10 @@ public class SettingUpGrid : MonoBehaviour
                 {
                     Text text = blocksObject[i].transform.Find("Text").gameObject.GetComponent<Text>();
                     text.text = array[i].ToString();
+                }
+                else
+                {
+                    Debug.Log("Fail to create object " + i);
                 }
             }
         }

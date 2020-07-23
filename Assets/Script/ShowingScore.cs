@@ -9,6 +9,7 @@ public class ShowingScore : MonoBehaviour
     [SerializeField]
     private Text scoreText;
 
+    [HideInInspector]
     private int score;
 
     private void Start()

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-//[RequireComponent(typeof(XmlMethods))]
+[RequireComponent(typeof(XmlMethods))]
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
@@ -21,15 +21,15 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     private int score;
 
-    //[HideInInspector]
-    //private XmlMethods xml;
+    [HideInInspector]
+    private XmlMethods xml;
 
     private void Awake()
     {
         playerName = PlayerPrefs.GetString("playerName");
         if (playerName == null || playerName == "") Debug.LogError("Fail to get player name");
 
-       // xml = GetComponent<XmlMethods>();
+        xml = GetComponent<XmlMethods>();
         SettingUpGrid setUpGrid = GameObject.Find("GridPart").GetComponent<SettingUpGrid>();
         setUpGrid.SetUp();
     }
@@ -129,7 +129,10 @@ public class GameManager : MonoBehaviour
     {
         if (_wonGame)
         {
-            //xml.updateScoreValue(playerName, score);
+            //update the score value recorded in xml file
+            xml.CreateChildInXml(playerName, score);
+
+            //set the parameters which will be sent to next scene
             PlayerPrefs.SetInt("wonGame", 1);
             PlayerPrefs.SetString("playerName", playerName);
             PlayerPrefs.SetInt("score", score);

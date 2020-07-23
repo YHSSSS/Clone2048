@@ -80,7 +80,7 @@ public class BlocksMovement : MonoBehaviour
                     for (int column = (gridSize - 1) % blockNumEachR; column > 0; column--)
                     {
                         int tempNum = column;
-                        CheckZeroHorizontalRecursion(row, column, tempNum, true);
+                        CheckZeroHorizontalRecursion(row, column, column, true);
                     }
 
                     //after removing zero in the list, check if the value for each index is addable
@@ -94,14 +94,14 @@ public class BlocksMovement : MonoBehaviour
                 }
                 break;
             case 2:
-                //movign from right to left
+                //moving from right to left
                 for (int row = 0; row < gridSize / blockNumEachR; row++)
                 {
                     //remove zero
                     for (int column = 0; column < (gridSize - 1) % blockNumEachR; column++)
                     {
                         int tempNum = column;
-                        CheckZeroHorizontalRecursion(row, column, tempNum, false);
+                        CheckZeroHorizontalRecursion(row, column, column, false);
                     }
 
                     //after removing zero in the list, check if the value for each index is addable
@@ -121,7 +121,7 @@ public class BlocksMovement : MonoBehaviour
                     for (int row = 0; row < (gridSize / blockNumEachR - 1); row++)
                     {
                         int tempNum = row;
-                        CheckZeroVerticalRecursion(row, column, tempNum, true);
+                        CheckZeroVerticalRecursion(row, column, row, true);
                     }
 
                     //after removing zero in the list, check if the value for each index is addable
@@ -141,7 +141,7 @@ public class BlocksMovement : MonoBehaviour
                     for (int row = (gridSize / blockNumEachR - 1); row > 0; row--)
                     {
                         int tempNum = row;
-                        CheckZeroVerticalRecursion(row, column, tempNum, false);
+                        CheckZeroVerticalRecursion(row, column, row, false);
                     }
 
                     //after removing zero in the list, check if the value for each index is addable
@@ -307,7 +307,7 @@ public class BlocksMovement : MonoBehaviour
 
     private void AddOneObjectEachAction()
     {
-        int textValue = Random.Range(0, 9) < 3 ? 2 : 4;
+        int textValue = Random.Range(0, 9) < 2 ? 2 : 4;
         
         //get randomly index
         int[] tempAddableIndex = new int[gridSize];
@@ -320,7 +320,7 @@ public class BlocksMovement : MonoBehaviour
                 tempIndex++;
             }
         }
-        int addObjectIndex = tempAddableIndex[Random.Range(0, tempIndex)];
+        int addObjectIndex = tempAddableIndex[Random.Range(0, tempIndex + 1)];
         Debug.Log("add object index" + addObjectIndex);
 
         //create the obejct 

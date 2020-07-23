@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-//[RequireComponent(typeof(XmlMethods))]
+[RequireComponent(typeof(XmlMethods))]
 [RequireComponent(typeof(Animator))]
 public class MenuManagement : MonoBehaviour
 {
@@ -14,17 +14,22 @@ public class MenuManagement : MonoBehaviour
     private InputField playerNameInput;
 
     //components
-    //[HideInInspector]
-    //private XmlMethods xml;
+    [HideInInspector]
+    private XmlMethods xml;
     [HideInInspector]
     private Animator ani;
 
+    private void Awake()
+    {
+        playerNameInput = GameObject.Find("PlayerName").GetComponent<InputField>();
+    }
+
     void Start()
     {
-        //xml = GetComponent<XmlMethods>();
-        ani = GetComponent<Animator>();
+        xml = GetComponent<XmlMethods>();
+        xml.CreateXml();
 
-        playerNameInput = GameObject.Find("PlayerName").GetComponent<InputField>();
+        ani = GetComponent<Animator>();
     }
 
     public void ShowNewGameTitle()
@@ -42,8 +47,6 @@ public class MenuManagement : MonoBehaviour
 
             //set the string to player prefabs which will be sent to next scene
             PlayerPrefs.SetString("playerName", playerName);
-
-            //xml.CreateXML(playerName);
 
             StartCoroutine(GetLoadingScene());
 
