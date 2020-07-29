@@ -1,1 +1,27 @@
-<players />
+<players>
+  <player>
+    <name>Initial player</name>
+    <score>0</score>
+    <date>2020/7/27 10:20:58</date>
+  </player>
+  <player>
+    <name>player 1</name>
+    <score>100</score>
+    <date>2020/7/27 10:20:58</date>
+  </player>
+  <player>
+    <name>player 2</name>
+    <score>90</score>
+    <date>2020/7/27 10:20:58</date>
+  </player>
+  <player>
+    <name>player 3</name>
+    <score>78</score>
+    <date>2020/7/27 10:20:58</date>
+  </player>
+  <player>
+    <name>player 4</name>
+    <score>94</score>
+    <date>2020/7/27 10:20:58</date>
+  </player>
+</players>

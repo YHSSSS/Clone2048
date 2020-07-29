@@ -1,28 +1,49 @@
 ﻿using UnityEngine;
 using System.IO;
 using System.Xml;
+using System.Collections.Generic;
+using System.Linq;
+
+public struct players
+{
+    public string playerName;
+    public string bestScore;
+    public string recordDate;
+}
+
 
 public class XmlMethods : MonoBehaviour
 {
-    private string path;
-
-    private void Start()
-    {
-        path = Application.dataPath + ConstString.RESOURCES_XML_PLAYER_INFO_PATH;
-    }
-
     public void CreateXml()
     {
+        string path = Application.dataPath + ConstString.FILE_XML_PLAYER_INFO_PATH;
         if (!File.Exists(path))
         {
             //create a xml document
             XmlDocument xmlDoc = new XmlDocument();
 
-            XmlDeclaration xmldecl = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", "");
-            xmlDoc.AppendChild(xmldecl);
+            XmlDeclaration xmlDecl = xmlDoc.CreateXmlDeclaration("1.0", "UTF-8", "");
 
             //create the first element
             XmlElement root = xmlDoc.CreateElement("players");
+
+            //create the second element
+            XmlElement element1 = xmlDoc.CreateElement("player");
+
+            //create child elements and set the value text
+            XmlElement elementChild1 = xmlDoc.CreateElement("name");
+            elementChild1.InnerText = "Initial player";
+            element1.AppendChild(elementChild1);
+
+            XmlElement elementChild2 = xmlDoc.CreateElement("score");
+            elementChild2.InnerText = "0";
+            element1.AppendChild(elementChild2);
+
+            XmlElement elementChild3 = xmlDoc.CreateElement("date");
+            elementChild3.InnerText = System.DateTime.Now.ToUniversalTime().ToString();
+            element1.AppendChild(elementChild3);
+
+            root.AppendChild(element1);
 
             xmlDoc.AppendChild(root);
 
@@ -35,35 +56,36 @@ public class XmlMethods : MonoBehaviour
         }
     }
 
+
     public void CreateChildInXml(string playerName, int score)
     {
-        string path = Application.dataPath + ConstString.RESOURCES_XML_PLAYER_INFO_PATH;
+        string path = Application.dataPath + ConstString.FILE_XML_PLAYER_INFO_PATH;
         if (File.Exists(path))
         {
-            XmlDocument xml = new XmlDocument();
-            xml.Load(path);
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(path);
 
-            XmlElement root = xml.GetElementById("players");
+            XmlElement root = xmlDoc.GetElementById("players");
 
             //create the second element
-            XmlElement element1 = xml.CreateElement("player");
+            XmlElement element1 = xmlDoc.CreateElement("player");
 
             //create child elements and set the value text
-            XmlElement elementChild1 = xml.CreateElement("name");
+            XmlElement elementChild1 = xmlDoc.CreateElement("name");
             elementChild1.InnerText = playerName;
             element1.AppendChild(elementChild1);
 
-            XmlElement elementChild2 = xml.CreateElement("score");
+            XmlElement elementChild2 = xmlDoc.CreateElement("score");
             elementChild2.InnerText = score.ToString();
             element1.AppendChild(elementChild2);
 
-            XmlElement elementChild3 = xml.CreateElement("date");
+            XmlElement elementChild3 = xmlDoc.CreateElement("date");
             elementChild3.InnerText = System.DateTime.Now.ToUniversalTime().ToString();
             element1.AppendChild(elementChild3);
 
             root.AppendChild(element1);
 
-            xml.Save(path);
+            xmlDoc.Save(path);
         }
         else
         {
@@ -71,60 +93,59 @@ public class XmlMethods : MonoBehaviour
         }
     }
 
-    public void LoadXml()
+    public List<players> GetSortedPlayerList()
     {
-        string path = Application.dataPath + ConstString.RESOURCES_XML_PLAYER_INFO_PATH;
+        //load the player score record in the xml file to the list
+        List<players> playerList = LoadXml();
+
+        //using the best score to sort the list 
+        //playerList = playerList.OrderByDescending(player => player.bestScore).ToList();
+        playerList = playerList.OrderBy(player => player.bestScore).ToList();
+
+        return playerList;
+    }
+
+    private List<players> LoadXml()
+    {
+        string path = Application.dataPath + ConstString.FILE_XML_PLAYER_INFO_PATH;
 
         XmlDocument xml = new XmlDocument();
 
         xml.Load(path);
 
+        List<players> playerList = new List<players>();
+
         //get the note in xml file
-        XmlNodeList playerList = xml.SelectSingleNode("players").ChildNodes;
+        XmlNodeList players = xml.SelectSingleNode("players").ChildNodes;
 
         //遍历所有子节点
-        foreach (XmlElement player in playerList)
+        foreach (XmlElement player in players)
         {
-            foreach (XmlElement elements in player.ChildNodes)
-            {
-                //放到一个textlist文本里
-                //textList.Add(xl2.GetAttribute("name") + ": " + xl2.InnerText);
-                //得到name为a的节点里的内容。放到TextList里
-                /*
-                if (xl2.GetAttribute("name") == "a")
-                {
-                    Adialogue.Add(xl2.GetAttribute("name") + ": " + xl2.InnerText);
-                    print("******************" + xl2.GetAttribute("name") + ": " + xl2.InnerText);
-                }
-                //得到name为b的节点里的内容。放到TextList里
-                else if (xl2.GetAttribute("map") == "abc")
-                {
-                    Bdialogue.Add(xl2.GetAttribute("name") + ": " + xl2.InnerText);
-                    print("******************" + xl2.GetAttribute("name") + ": " + xl2.InnerText);
-                }
-                */
-                print(elements.Name + ":" + elements.InnerText);
-            }
+            players playerModel = new players();
+
+            playerModel.playerName = player.GetAttribute("name").ToString();
+            playerModel.bestScore = player.GetAttribute("score").ToString();
+            playerModel.recordDate = player.GetAttribute("date").ToString();
+
+            playerList.Add(playerModel);
         }
+
+        return playerList;
     }
 
     public int GetCurrentValue(string playerName)
     {
+        string path = Application.dataPath + ConstString.FILE_XML_PLAYER_INFO_PATH;
+
         XmlDocument xml = new XmlDocument();
         xml.Load(path);
 
         XmlNodeList xmlNodeList = xml.SelectSingleNode("players").ChildNodes;
-        foreach (XmlElement xl in xmlNodeList)
+        foreach (XmlElement player in xmlNodeList)
         {
-            if (xl.Name.Equals(playerName))
+            if (player.Name.Equals(playerName))
             {
-                foreach (XmlElement x2 in xl.ChildNodes)
-                {
-                    if (x2.Name.Equals("score"))
-                    {
-                        return int.Parse(x2.InnerText.ToString());
-                    }
-                }
+                return int.Parse(player.GetAttribute("score").ToString());
             }
         }
         return 0;

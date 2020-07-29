@@ -751,7 +751,7 @@ GameObject:
   m_Component:
   - component: {fileID: 967590323}
   m_Layer: 5
-  m_Name: Score
+  m_Name: ScoreTitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1186,9 +1186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 587ce42a39c9ee64282c503e1b3bbb65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreObejct: {fileID: 967590322}
-  wonGame: {fileID: 1267046930}
-  playerNameText: {fileID: 434962404}
 --- !u!1 &1909847169
 GameObject:
   m_ObjectHideFlags: 0
@@ -1224,7 +1221,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 343, y: 690}
+  m_AnchoredPosition: {x: 0, y: -647}
   m_SizeDelta: {x: 170, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1909847171

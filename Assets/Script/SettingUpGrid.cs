@@ -24,44 +24,53 @@ public class SettingUpGrid : MonoBehaviour
     [HideInInspector]
     private GameObject[] blocksObject;
 
+    /// <summary>
+    /// Set up the blocks and grid by calculating the relative info according to the 
+    /// scrren size and intialize the array which will be used to record the block value
+    /// </summary>
     public void SetUp()
     {
+        //Get game manager component
         manager = GameObject.Find("_GameManager").GetComponent<GameManager>();
-        if (manager == null) Debug.LogError("Fail to find game manager!");
-        //manager = _manager;
+        if (manager == null) 
+            Debug.LogError("Failed to find game manager!");
 
-        //check if the block information lists are null  
+        //Check if the block information lists are null.  
         if (manager.GetArrayList() != null) manager.SetArrayList(null);
         if (manager.GetBlockPosition() != null) manager.SetBlockPosition(null);
         
         DestroyObjectInArray();
         manager.SetBlocksObject(null);
 
-        //get the basic grid size
+        //Get the basic grid size
         gridSize = manager.GetGridSize();
         blockNumEachR = manager.GetBlockNumEachR();
   
-        //initailize new array
+        //Initailize new array
         blocksPosition = new Vector2[gridSize];
         array = new int[gridSize];
         blocksObject = new GameObject[gridSize];
 
-        //get the grid background rect transform
+        //Get the grid background rect transform
         RectTransform gridBackgroundRect = GetComponent<RectTransform>();   
 
-        //use the transform information to get the size of the prefab so it fit the background
+        //Use the transform information to get the size of the prefab so it fit the background.
         GetBlockSize(gridBackgroundRect.rect.width, gridBackgroundRect.rect.height);
 
-        //get the position for each blocks in the grid which will be used to move those blocks 
+        //Get the position for each blocks in the grid which will be used to move those blocks. 
         GetBlocksPosition(gridBackgroundRect.transform.localPosition.x, gridBackgroundRect.transform.localPosition.y);
 
-        //initialize the array and randomly get two initial values
+        //Initialize the array and randomly get two initial values.
         InitializeArray();
 
-        //initiail blocks in the grid to create the block object according to the array
+        //Initiial blocks in the grid to create the block object according to the array.
         InitializeArrayInObject();
     }
 
+
+    /// <summary>
+    /// Destroy the objecst stored in the array
+    /// </summary>
     private void DestroyObjectInArray()
     {
         for (int i = 0; i < gridSize; i++)
@@ -73,6 +82,13 @@ public class SettingUpGrid : MonoBehaviour
             }
         }
     }
+
+
+    /// <summary>
+    /// Get the postion that each block in the grid will locate on the background
+    /// </summary>
+    /// <param name="centerX">the grid background position x</param>
+    /// <param name="centerY">the grid background position y</param>
     private void GetBlocksPosition(float centerX, float centerY)
     {
         for (int i = 0; i < gridSize; i++)
@@ -80,10 +96,11 @@ public class SettingUpGrid : MonoBehaviour
             float positionx = 0;
             float positiony = 0;
 
+            //According to the number of blocks that each row will have to 
             switch (blockNumEachR)
             {
                 case 4:
-                    //get position x
+                    //Get position x
                     if (i % blockNumEachR == 0 || i % blockNumEachR == 3)
                     {
                         positionx = centerX + (i % blockNumEachR <= 1 ? -1 : 1) * 1.5f * (blockSize + blockDis);
@@ -92,7 +109,7 @@ public class SettingUpGrid : MonoBehaviour
                     {
                         positionx = centerX + (i % blockNumEachR <= 1 ? -1 : 1) * 0.5f * (blockSize + blockDis);
                     }
-                    //get position y               
+                    //Get position y               
                     if (i / blockNumEachR == 0 || i / blockNumEachR == 3)
                     {
                         positiony = centerY + (i / blockNumEachR <= 1 ? 1 : -1) * 1.5f * (blockSize + blockDis);
@@ -105,31 +122,42 @@ public class SettingUpGrid : MonoBehaviour
                 case 5:
                     break;
             }
-            //make the position in the list following the transfrom in world instread of local
+            //Make the position in the list following the transfrom in world instread of local.
             blocksPosition[i] = new Vector2(positionx - transform.localPosition.x, positiony - transform.localPosition.y);
         }
-        //set the final blocks position array to game manager
+        //Set the final blocks position array to game manager.
         manager.SetBlockPosition(blocksPosition);
     }
 
+
+    /// <summary>
+    /// Calculate the size of the block so that the blocks can fit in the background
+    /// </summary>
+    /// <param name="width">the width of the grid background</param>
+    /// <param name="height">the height of the grid background</param>
     private void GetBlockSize(float width, float height)
     {
         if (height < width) Debug.LogError("width is larger than height");
         
-        //according to the ratio number to adjust the length of block size and block distance
+        //According to the ratio number to adjust the length of block size and block distance.
         blockSize = width * (number - 1) / (float)(blockNumEachR * number);
         blockDis = width / (float)(blockNumEachR * number);
     }
 
+
+    /// <summary>
+    /// Initialize the array which stores the value of the blocks and two of
+    /// blocks will be given random value (2 or 4)
+    /// </summary>
     private void InitializeArray()
     {
-        //set the array to zero 
+        //Set the array to zero 
         for (int i = 0; i < gridSize; i++)
         {
             array[i] = 0;
         }
 
-        //get two random indexs
+        //Get two random indexs
         int num1 = Random.Range(0, gridSize);
         int num2;
         do
@@ -139,65 +167,77 @@ public class SettingUpGrid : MonoBehaviour
 
         Debug.Log("initial num 1:" + num1 + " num 2:" + num2);
 
-        //get two random numbers
+        //Get two random numbers
         int[] iniNum = new int[2];
         for (int j = 0; j < Mathf.Sqrt(blockNumEachR); j++)
         {
             iniNum[j] = Random.Range(0, 9) <2 ? 2 : 4;
         }
 
-        //set numbers to indexs
+        //Set numbers to indexs
         array[num1] = iniNum[0];
         array[num2] = iniNum[1];
 
-        //set the array value to game manager
+        //Set the array value to game manager
         manager.SetArrayList(array);
     }
 
-    public GameObject CreateBlocksObject(int i)
+
+    /// <summary>
+    /// Create a new block object using block prefab and make the block locate at 
+    /// the position that stored in the position array of the index 
+    /// </summary>
+    /// <param name="index">a new block will be created with this index</param>
+    /// <returns>a new block object</returns>
+    public GameObject CreateABlockObject(int index)
     {
-        //check if the object of current index exist
-        GameObject blockTemp = GameObject.Find("Block" + i);
+        //Check if the object of current index exist
+        GameObject blockTemp = GameObject.Find("Block" + index);
         if (blockTemp)
         {
             Destroy(blockTemp);
             Debug.Log("Destroy exist object");
         }  
 
-        //create a game object 
-        //load the block prefab object from resource
+        //Create a game object 
+        //Load the block prefab object from resource
         GameObject blockPrefab = Resources.Load(ConstString.RESOURCES_BLOCK_PATH) as GameObject;
 
-        //check if loading the object is failed
+        //Check if loading the object is failed
         if (!blockPrefab) Debug.LogError("Fail to load block prefab");
 
-        //instantiate a new block object
+        //Create a new block object
         GameObject block = Instantiate(blockPrefab) as GameObject;
         
-        //create a rectangle transform 
+        //Create a rectangle transform 
         RectTransform rt = block.GetComponent<RectTransform>();
         
-        //set the parent object of block to a game object and adjust the transform according to this game object
+        //Set the parent object of block to a game object and adjust the transform according to this game object.
         block.transform.SetParent(transform, false);
-        rt.transform.localPosition = blocksPosition[i];
+        rt.transform.localPosition = blocksPosition[index];
         
-        //set the name of block object and the size of block object
-        rt.name = "Block" + i;
+        //Set the name of block object and the size of block object.
+        rt.name = "Block" + index;
         rt.sizeDelta = new Vector2(blockSize, blockSize);
         
         return block;
     }
 
+
+    /// <summary>
+    /// Clear the objects in the object array to clean the blocks in the grid 
+    /// and create the default objects that has a value larger than zero.
+    /// </summary>
     private void InitializeArrayInObject()
     {
         for (int i = 0; i < gridSize; i++)
         {
-            if (array[i] != 0)
+            if (array[i] <= 0)
             {
-                //create a block object if the value of current index
-                blocksObject[i] = CreateBlocksObject(i);
+                //Create a block object if the value of current index.
+                blocksObject[i] = CreateABlockObject(i);
 
-                //set the text of the object using the value of current array index
+                //Set the text of the object using the value of current array index.
                 if (blocksObject[i] != null)
                 {
                     Text text = blocksObject[i].transform.Find("Text").gameObject.GetComponent<Text>();
@@ -210,7 +250,7 @@ public class SettingUpGrid : MonoBehaviour
             }
         }
 
-        //update the blocks object to game manger
+        //Update the blocks object to game manger.
         manager.SetBlocksObject(blocksObject);
     }
 }

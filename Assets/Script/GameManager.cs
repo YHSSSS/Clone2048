@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(XmlMethods))]
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
@@ -21,15 +20,13 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     private int score;
 
-    [HideInInspector]
-    private XmlMethods xml;
-
     private void Awake()
     {
+        //Get player name from playerPrefs.
         playerName = PlayerPrefs.GetString("playerName");
-        if (playerName == null || playerName == "") Debug.LogError("Fail to get player name");
+        if (playerName == null || playerName == "") 
+            Debug.LogError("Fail to get player name");
 
-        xml = GetComponent<XmlMethods>();
         SettingUpGrid setUpGrid = GameObject.Find("GridPart").GetComponent<SettingUpGrid>();
         setUpGrid.SetUp();
     }
@@ -84,6 +81,11 @@ public class GameManager : MonoBehaviour
         return blocksObject;
     }
 
+    /// <summary>
+    /// Check each index in the array satisfy the requirement to won the game or 
+    /// lose the game. Send the result to the EndGame function to give action to 
+    /// the result.
+    /// </summary>
     public void CheckEndGame()
     {
         //check if win the game
@@ -105,34 +107,42 @@ public class GameManager : MonoBehaviour
         EndGame(false);
     }
 
-    private bool CheckAddable(int index)
+    /// <summary>
+    /// Check if the value of the current index the array is zero or can be able to 
+    /// be added by the value of surrounding index in the grid.
+    /// </summary>
+    /// <param name="_index">the index number that will be checked</param>
+    /// <returns>If yes means the value of index in the array is addable, else means 
+    /// that is not addable</returns>
+    private bool CheckAddable(int _index)
     {
-        if (array[index] == 0)
+        if (array[_index] == 0)
             return true;
-        //check if the left block of current block is addable
-        if (index % blockNumEachR > 0 && array[index - 1] == array[index] )
+        //Check if the left block of current block is addable.
+        if (_index % blockNumEachR > 0 && array[_index - 1] == array[_index] )
             return true;
-        //check if the right block of current block is addable
-        if (index % blockNumEachR < blockNumEachR -1 && array[index + 1] == array[index])
+        //Check if the right block of current block is addable.
+        if (_index % blockNumEachR < blockNumEachR -1 && array[_index + 1] == array[_index])
             return true;
-        //check if the up block of current block is addable
-        if (index >= blockNumEachR && array[index - blockNumEachR] == array[index])
+        //Check if the up block of current block is addable.
+        if (_index >= blockNumEachR && array[_index - blockNumEachR] == array[_index])
             return true;
-        //check if the down block of current block is addable
-        if (index < GRID_SIZE - blockNumEachR && array[index + blockNumEachR] == array[index])
+        //Check if the down block of current block is addable.
+        if (_index < GRID_SIZE - blockNumEachR && array[_index + blockNumEachR] == array[_index])
             return true;
 
         return false;
     }
 
+    /// <summary>
+    /// Store player records to playerPrefs and load to next scene.
+    /// </summary>
+    /// <param name="_wonGame">the result that the game is end or not</param>
     private void EndGame(bool _wonGame)
     {
         if (_wonGame)
         {
-            //update the score value recorded in xml file
-            xml.CreateChildInXml(playerName, score);
-
-            //set the parameters which will be sent to next scene
+            //Set the parameters which will be sent to next scene.
             PlayerPrefs.SetInt("wonGame", 1);
             PlayerPrefs.SetString("playerName", playerName);
             PlayerPrefs.SetInt("score", score);
@@ -140,10 +150,9 @@ public class GameManager : MonoBehaviour
         else
             PlayerPrefs.SetInt("WonGame", 0);
 
-        //jump to ending scene
+        //Load the ending scene.
         SceneManager.LoadScene(2);
 
         Debug.Log("you won the game!");
     }
-
 }

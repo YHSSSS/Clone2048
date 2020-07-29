@@ -6,7 +6,7 @@ public class ShowingScore : MonoBehaviour
     [HideInInspector]
     private GameManager manager;
 
-    [SerializeField]
+    [HideInInspector]
     private Text scoreText;
 
     [HideInInspector]
@@ -14,16 +14,25 @@ public class ShowingScore : MonoBehaviour
 
     private void Start()
     {
-        manager = GameObject.Find("_GameManager").GetComponent<GameManager>();
-        if (manager == null) Debug.LogError("Fail to find game manager!");
+        //Get the text component aftering finding the score title object
+        scoreText = GameObject.Find("ScoreTitle").GetComponent<Text>();
+        if (!scoreText)
+            Debug.LogError("Failed to find score title object");
+
+        manager = GetComponent<GameManager>();
+        if (!manager) 
+            Debug.LogError("Failed to find game manager!");
 
         score = 0;
     }
 
     private void FixedUpdate()
     {
+        //Get current score from game manager
         score = manager.GetScore();
-        Debug.Log("score : " + score);
+        //Debug.Log("score : " + score);
+
+        //Update the score text 
         scoreText.text = score.ToString();
     }
 }

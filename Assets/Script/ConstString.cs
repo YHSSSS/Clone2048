@@ -2,6 +2,11 @@
 
 public class ConstString : MonoBehaviour
 {
+    //Xml file path
+    [SerializeField]
+    public const string FILE_XML_PLAYER_INFO_PATH = "/Resources/PlayerList.xml";
+
+    //Resources path
     [SerializeField]
     public const string RESOURCES_ALERT_DIALOG_PATH = "Prefab/AlertDialog";
     [SerializeField]
@@ -9,7 +14,9 @@ public class ConstString : MonoBehaviour
     [SerializeField]
     public const string RESOURCES_RANK_VIEW_PATH = "Prefab/RankList";
     [SerializeField]
-    public const string RESOURCES_XML_PLAYER_INFO_PATH = "/Resources/PlayerList.xml";
+    public const string RESOURCES_RANK_MEMBER_PATH = "Prefab/RankMemberInfo";
     [SerializeField]
-    public const string RESOURCES_RANK_MEMBER_PATH = "/Resources/RankMemberInfo";
+    public const string RESOURCES_BACKGROUND_MUSIC_PATH = "Music/BackgroundMusic";
+    [SerializeField]
+    public const string RESOURCES_MENU_MUSIC_PATH = "Music/MenuMusic";
 }
