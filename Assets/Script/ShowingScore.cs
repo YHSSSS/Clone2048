@@ -15,7 +15,7 @@ public class ShowingScore : MonoBehaviour
     private void Start()
     {
         //Get the text component aftering finding the score title object
-        scoreText = GameObject.Find("ScoreTitle").GetComponent<Text>();
+        scoreText = GameObject.Find("ScoreNum").GetComponent<Text>();
         if (!scoreText)
             Debug.LogError("Failed to find score title object");
 

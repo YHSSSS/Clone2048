@@ -19,6 +19,7 @@ public class MenuManagement : MonoBehaviour
     [HideInInspector]
     private Animator ani;
 
+    bool ShowTitleButtonIsPressed;
     private void Awake()
     {
         playerNameInput = GameObject.Find("PlayerName").GetComponent<InputField>();
@@ -30,12 +31,7 @@ public class MenuManagement : MonoBehaviour
         xml.CreateXml();
 
         ani = GetComponent<Animator>();
-    }
-
-    public void ShowNewGameTitle()
-    {
-        //Set the animator bool variable to show a button
-        ani.SetBool("ShowTitleButtonIsPressed", true);
+        ani.SetBool("StartNewGameIsPressed", false);
     }
 
     public void StartNewGame()
@@ -43,12 +39,21 @@ public class MenuManagement : MonoBehaviour
         if (playerNameInput.text != null && playerNameInput.text != "" && playerNameInput.text.Length > 0)
         {
             //Set animator bool variable.
-            ani.SetBool("StartNewGameIsPressed", true);
+            //ani.SetBool("StartNewGameIsPressed", true);
+
+            //Load the loading dialog prefab
+            GameObject loadingDialogPrefab = Resources.Load(ConstString.RESOURCES_LOADING_DIALOG_PATH) as GameObject;
+            if (!loadingDialogPrefab)
+                Debug.LogError("Failed to load the loading dialog prefab");
+
+            //Create a loading dialog to inform player for waiting
+            GameObject loadingDialog = Instantiate(loadingDialogPrefab) as GameObject;
+            loadingDialog.transform.SetParent(transform);
 
             //Set the string to player prefabs which will be sent to next scene.
             PlayerPrefs.SetString("playerName", playerName);
 
-            StartCoroutine(GetLoadingScene());
+            //StartCoroutine(GetLoadingScene());
 
             //Load to next scene.
             SceneManager.LoadScene(1);
@@ -56,27 +61,14 @@ public class MenuManagement : MonoBehaviour
         else
         {
             //Load dialog prefab from resource
-            GameObject dialogPrefab = Resources.Load(ConstString.RESOURCES_ALERT_DIALOG_PATH) as GameObject;
-
-            //Check if loading the prefab is failed.
-            if (dialogPrefab == null) Debug.LogError("Fail to load dialog prefab");
+            GameObject alertDialogPrefab = Resources.Load(ConstString.RESOURCES_ALERT_DIALOG_PATH) as GameObject;
+            if (!alertDialogPrefab) 
+                Debug.LogError("Failed to load the alert dialog prefab");
 
             //Create a dialog object using dialog prefab. 
-            GameObject dialog = Instantiate(dialogPrefab) as GameObject;
-
-            //Set the parent of the object. 
-            dialog.transform.SetParent(transform);
-
-            dialog.transform.name = "AlertDialog";
-
-            //Change the dialog text. 
-            dialog.transform.Find("DialogText").GetComponent<Text>().text = "Please Enter Your Name";
+            GameObject alertDialog = Instantiate(alertDialogPrefab) as GameObject;
+            alertDialog.transform.SetParent(transform);
         }
-    }
-
-    private IEnumerator GetLoadingScene()
-    {
-        yield return new WaitForSeconds(3);
     }
 
     public void SetPlayerName()
@@ -90,5 +82,4 @@ public class MenuManagement : MonoBehaviour
         string tempUrl = "https://github.com/YHSSSS";
         Application.OpenURL(tempUrl);
     }
-
 }

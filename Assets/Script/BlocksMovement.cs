@@ -47,7 +47,7 @@ public class BlocksMovement : MonoBehaviour
         setUpGrid = GetComponent<SettingUpGrid>();
         manager = GameObject.Find("_GameManager").GetComponent<GameManager>();
         if (!manager) 
-            Debug.LogError("Fail to find game manager!");
+            Debug.LogError("Failed to find game manager!");
 
         //Get the information of the grid and array.
         gridSize = manager.GetGridSize();
@@ -171,7 +171,7 @@ public class BlocksMovement : MonoBehaviour
                 if (!blocks[i])
                 {
                     blocks[i] = setUpGrid.CreateABlockObject(i);
-                    if (!blocks[i]) Debug.LogError("create a null object at: " + i);
+                    if (!blocks[i]) Debug.LogError("Created a null object at: " + i);
                 }
 
                 //If the object of this index is exist, only change the text of the object.
@@ -214,29 +214,29 @@ public class BlocksMovement : MonoBehaviour
     /// <summary>
     /// Check if the value of current index recursively in the array is zero.
     /// </summary>
-    /// <param name="row">the position row of the index in the grid</param>
-    /// <param name="column">the position column of the index in the grid</param>
-    /// <param name="num">the times that need to check the value of this index</param>
-    /// <param name="isUp">if is true which means the moving direction is swiping to up, 
+    /// <param name="_row">the position row of the index in the grid</param>
+    /// <param name="_column">the position column of the index in the grid</param>
+    /// <param name="_num">the times that need to check the value of this index</param>
+    /// <param name="_isUp">if is true which means the moving direction is swiping to up, 
     /// else means is swiping to down</param>
-    private void CheckZeroVerticalRecursion(int row, int column, int num, bool isUp)
+    private void CheckZeroVerticalRecursion(int _row, int _column, int _num, bool _isUp)
     {
         //Check if the value of current index is zero.
-        if (array[row * blockNumEachR + column] == 0)
+        if (array[_row * blockNumEachR + _column] == 0)
         {
             //If user is swiping to up.
-            if (isUp)
+            if (_isUp)
             {
-                ArrayRemoveZeroVertical(column, row, row + 1, isUp);
-                if (num < blockNumEachR - 1)
-                    CheckZeroVerticalRecursion(row, column, ++num, isUp);
+                ArrayRemoveZeroVertical(_column, _row, _row + 1, _isUp);
+                if (_num < blockNumEachR - 1)
+                    CheckZeroVerticalRecursion(_row, _column, ++_num, _isUp);
             }
             //If user is swiping to down.
             else
             {
-                ArrayRemoveZeroVertical(column, row, row - 1, isUp);
-                if (num > 0)
-                    CheckZeroVerticalRecursion(row, column, --num, isUp);
+                ArrayRemoveZeroVertical(_column, _row, _row - 1, _isUp);
+                if (_num > 0)
+                    CheckZeroVerticalRecursion(_row, _column, --_num, _isUp);
             }
         }
     }

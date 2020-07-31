@@ -152,7 +152,12 @@ public class GameManager : MonoBehaviour
 
         //Load the ending scene.
         SceneManager.LoadScene(2);
+    }
 
-        Debug.Log("you won the game!");
+    public void EndGameNow()
+    {
+        score = 30;
+        playerName = "YHS";
+        EndGame(true);
     }
 }

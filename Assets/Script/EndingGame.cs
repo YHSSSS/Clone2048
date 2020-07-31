@@ -19,9 +19,9 @@ public class EndingGame : MonoBehaviour
         GameObject.Find("PlayerName").GetComponent<Text>().text = playerName;
 
         //Get won game title object.
-        GameObject wonGame = GameObject.Find("wonGameTitle");
+        GameObject wonGame = GameObject.Find("WonGameTitle");
         if (!wonGame) 
-            Debug.LogError("Fail to find won game title object");
+            Debug.LogError("Failed to find the won game title object");
 
         //Check if player won the game.
         if (PlayerPrefs.GetInt("wonGame") == 1)
@@ -32,17 +32,20 @@ public class EndingGame : MonoBehaviour
             int score = PlayerPrefs.GetInt("score");
 
             //Check if current score is higher than best score.
-            if (xml.GetCurrentValue(playerName) < score)
+            int bestScore = xml.GetCurrentValue(playerName);
+            if (bestScore < score && bestScore !=0)
             {
-                //Save the beset record in the xml file.
+                xml.UpdateScore(playerName, score);
+            }
+            else if(bestScore == 0)
+            {
                 xml.CreateChildInXml(playerName, score);
-                Debug.Log("Updated best score");
             }
 
             //Get the title text object.
             GameObject scoreObject = GameObject.Find("ScoreTitle");
             if (!scoreObject)
-                Debug.LogError("Fail to find score object title object");
+                Debug.LogError("Failed to find the score title object");
 
             //Set the text to the text object.
             scoreObject.transform.Find("ScoreTextBlack").GetComponent<Text>().text = score.ToString();
@@ -50,7 +53,7 @@ public class EndingGame : MonoBehaviour
 
             //Set won game title.
             wonGame.transform.Find("TitleBlack").GetComponent<Text>().text = "CONGRATULATIONS";
-            wonGame.transform.Find("TitleBlack").GetComponent<Text>().text = "CONGRATULATIONS";
+            wonGame.transform.Find("TitleWhite").GetComponent<Text>().text = "CONGRATULATIONS";
         }
         else if (PlayerPrefs.GetInt("wonGame") == 2)
         {
@@ -58,12 +61,21 @@ public class EndingGame : MonoBehaviour
 
             //Set won game title.
             wonGame.transform.Find("TitleBlack").GetComponent<Text>().text = "LOSE";
-            wonGame.transform.Find("TitleBlack").GetComponent<Text>().text = "LOSE";
+            wonGame.transform.Find("TitleWhite").GetComponent<Text>().text = "LOSE";
         }
     }
 
     public void GoBackMenu()
     {
+        //Load the loading dialog prefab
+        GameObject loadingDialogPrefab = Resources.Load(ConstString.RESOURCES_LOADING_DIALOG_PATH) as GameObject;
+        if (!loadingDialogPrefab)
+            Debug.LogError("Failed to load the loading dialog prefab");
+
+        //Create a loading dialog to inform player for waiting
+        GameObject loadingDialog = Instantiate(loadingDialogPrefab) as GameObject;
+        loadingDialog.transform.SetParent(transform);
+
         SceneManager.LoadScene(0);
     }
 
@@ -71,17 +83,16 @@ public class EndingGame : MonoBehaviour
     {
         //Load the rank view prefab object. 
         GameObject rankListObject = Resources.Load(ConstString.RESOURCES_RANK_VIEW_PATH) as GameObject;
-
-        //Check if loading the object is failed.
-        if (!rankListObject) Debug.LogError("Fail to load rank list object");
+        if (!rankListObject) 
+            Debug.LogError("Failed to load rank list object");
 
         //Create a new scroll view object.
         GameObject scrollObject = Instantiate(rankListObject) as GameObject;
 
-        scrollObject.transform.SetParent(transform);
+        scrollObject.transform.SetParent(transform.parent.transform);
 
         //Get the scroll view component from the game object.
-        Transform viewContent = scrollObject.transform.Find("Content");
+        Transform viewContent = scrollObject.transform.Find("RankView/Viewport/Content");
 
         //Load the rank memeber object from rescource. 
         GameObject rankMemberObject = Resources.Load(ConstString.RESOURCES_RANK_MEMBER_PATH) as GameObject;
@@ -92,14 +103,12 @@ public class EndingGame : MonoBehaviour
         foreach (players element in playerList)
         {
             //Create a new member object to show the record in the rank.
-            GameObject rankMember = Instantiate(rankMemberObject) as GameObject;
+            GameObject rankMember = Instantiate(rankMemberObject, viewContent) as GameObject;
 
             //Set the information in the list to the text in the member object.
             rankMember.transform.Find("PlayerName").GetComponent<Text>().text = element.playerName;
             rankMember.transform.Find("PlayerScore").GetComponent<Text>().text = element.bestScore;
 
-            //Set the view content object as the parent of member object. 
-            rankMember.transform.SetParent(viewContent);
         }
     }
 }

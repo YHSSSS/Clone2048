@@ -87,9 +87,9 @@ public class SettingUpGrid : MonoBehaviour
     /// <summary>
     /// Get the postion that each block in the grid will locate on the background
     /// </summary>
-    /// <param name="centerX">the grid background position x</param>
-    /// <param name="centerY">the grid background position y</param>
-    private void GetBlocksPosition(float centerX, float centerY)
+    /// <param name="_centerX">the grid background position x</param>
+    /// <param name="_centerY">the grid background position y</param>
+    private void GetBlocksPosition(float _centerX, float _centerY)
     {
         for (int i = 0; i < gridSize; i++)
         {
@@ -103,20 +103,20 @@ public class SettingUpGrid : MonoBehaviour
                     //Get position x
                     if (i % blockNumEachR == 0 || i % blockNumEachR == 3)
                     {
-                        positionx = centerX + (i % blockNumEachR <= 1 ? -1 : 1) * 1.5f * (blockSize + blockDis);
+                        positionx = _centerX + (i % blockNumEachR <= 1 ? -1 : 1) * 1.5f * (blockSize + blockDis);
                     }
                     else if (i % blockNumEachR == 1 || i % blockNumEachR == 2)
                     {
-                        positionx = centerX + (i % blockNumEachR <= 1 ? -1 : 1) * 0.5f * (blockSize + blockDis);
+                        positionx = _centerX + (i % blockNumEachR <= 1 ? -1 : 1) * 0.5f * (blockSize + blockDis);
                     }
                     //Get position y               
                     if (i / blockNumEachR == 0 || i / blockNumEachR == 3)
                     {
-                        positiony = centerY + (i / blockNumEachR <= 1 ? 1 : -1) * 1.5f * (blockSize + blockDis);
+                        positiony = _centerY + (i / blockNumEachR <= 1 ? 1 : -1) * 1.5f * (blockSize + blockDis);
                     }
                     else if (i / blockNumEachR == 1 || i / blockNumEachR == 2)
                     {
-                        positiony = centerY + (i / blockNumEachR <= 1 ? 1 : -1) * 0.5f * (blockSize + blockDis);
+                        positiony = _centerY + (i / blockNumEachR <= 1 ? 1 : -1) * 0.5f * (blockSize + blockDis);
                     }
                     break;
                 case 5:
@@ -133,15 +133,16 @@ public class SettingUpGrid : MonoBehaviour
     /// <summary>
     /// Calculate the size of the block so that the blocks can fit in the background
     /// </summary>
-    /// <param name="width">the width of the grid background</param>
-    /// <param name="height">the height of the grid background</param>
-    private void GetBlockSize(float width, float height)
+    /// <param name="_width">the width of the grid background</param>
+    /// <param name="_height">the height of the grid background</param>
+    private void GetBlockSize(float _width, float _height)
     {
-        if (height < width) Debug.LogError("width is larger than height");
+        if (_height < _width) 
+            Debug.LogError("Width is larger than height");
         
         //According to the ratio number to adjust the length of block size and block distance.
-        blockSize = width * (number - 1) / (float)(blockNumEachR * number);
-        blockDis = width / (float)(blockNumEachR * number);
+        blockSize = _width * (number - 1) / (float)(blockNumEachR * number);
+        blockDis = _width / (float)(blockNumEachR * number);
     }
 
 
@@ -165,7 +166,7 @@ public class SettingUpGrid : MonoBehaviour
             num2 = Random.Range(0, gridSize);
         } while (num1 == num2);
 
-        Debug.Log("initial num 1:" + num1 + " num 2:" + num2);
+        //Debug.Log("initial num 1:" + num1 + " num 2:" + num2);
 
         //Get two random numbers
         int[] iniNum = new int[2];
@@ -187,16 +188,16 @@ public class SettingUpGrid : MonoBehaviour
     /// Create a new block object using block prefab and make the block locate at 
     /// the position that stored in the position array of the index 
     /// </summary>
-    /// <param name="index">a new block will be created with this index</param>
+    /// <param name="_index">a new block will be created with this index</param>
     /// <returns>a new block object</returns>
-    public GameObject CreateABlockObject(int index)
+    public GameObject CreateABlockObject(int _index)
     {
         //Check if the object of current index exist
-        GameObject blockTemp = GameObject.Find("Block" + index);
+        GameObject blockTemp = GameObject.Find("Block" + _index);
         if (blockTemp)
         {
             Destroy(blockTemp);
-            Debug.Log("Destroy exist object");
+            //Debug.Log("Destroy exist object");
         }  
 
         //Create a game object 
@@ -204,7 +205,7 @@ public class SettingUpGrid : MonoBehaviour
         GameObject blockPrefab = Resources.Load(ConstString.RESOURCES_BLOCK_PATH) as GameObject;
 
         //Check if loading the object is failed
-        if (!blockPrefab) Debug.LogError("Fail to load block prefab");
+        if (!blockPrefab) Debug.LogError("Failed to load block prefab");
 
         //Create a new block object
         GameObject block = Instantiate(blockPrefab) as GameObject;
@@ -214,10 +215,10 @@ public class SettingUpGrid : MonoBehaviour
         
         //Set the parent object of block to a game object and adjust the transform according to this game object.
         block.transform.SetParent(transform, false);
-        rt.transform.localPosition = blocksPosition[index];
+        rt.transform.localPosition = blocksPosition[_index];
         
         //Set the name of block object and the size of block object.
-        rt.name = "Block" + index;
+        rt.name = "Block" + _index;
         rt.sizeDelta = new Vector2(blockSize, blockSize);
         
         return block;
@@ -232,7 +233,7 @@ public class SettingUpGrid : MonoBehaviour
     {
         for (int i = 0; i < gridSize; i++)
         {
-            if (array[i] <= 0)
+            if (array[i] > 0)
             {
                 //Create a block object if the value of current index.
                 blocksObject[i] = CreateABlockObject(i);
@@ -245,7 +246,7 @@ public class SettingUpGrid : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Fail to create object " + i);
+                    Debug.Log("Failed to create object " + i);
                 }
             }
         }

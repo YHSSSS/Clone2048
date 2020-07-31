@@ -10,6 +10,8 @@ public class ConstString : MonoBehaviour
     [SerializeField]
     public const string RESOURCES_ALERT_DIALOG_PATH = "Prefab/AlertDialog";
     [SerializeField]
+    public const string RESOURCES_LOADING_DIALOG_PATH = "Prefab/LoadingDialog";
+    [SerializeField]
     public const string RESOURCES_BLOCK_PATH = "Prefab/Block";
     [SerializeField]
     public const string RESOURCES_RANK_VIEW_PATH = "Prefab/RankList";
