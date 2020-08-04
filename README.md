@@ -10,7 +10,7 @@
   不需要调试的game object可直接在代码中用GameObject.Find()或者Transform.Find()直接查找而不是挂在inspector上。
   
 
-由于本项目仍然在开发中，但会上传当前可运行的最新版apk在GitHub可供下载。
+由于本项目仍然在开发中，但会上传当前可运行的最新版apk在GitHub的Clone2048Build的repository中可供下载。
 
 YHSSSS
 20200804
